@@ -5,7 +5,9 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ConsoleApplication2;
 using HidLibrary;
+using TestCA.VP;
 
 namespace TestCA
 {
@@ -15,30 +17,41 @@ namespace TestCA
 
         public static void Main()
         {
-
-            foreach (var hidDevice in HidDevices.Enumerate())
-            {
-                Console.WriteLine(hidDevice.ToString());
-            }
-
-            device = HidDevices.Enumerate().ToArray()[4];
+            device = HidDevices.Enumerate().ToArray()[0];
             device.OpenDevice();
             device.Inserted += Device_Inserted; 
             device.Removed += Device_Removed;   
             device.MonitorDeviceEvents = true;
             device.ReadReport(OnReport);
 
-            var report = device.CreateReport();
-            report.ReportId = 0x4;
-            //http://networkupstools.org/protocols/us9003.html#_communication_examples
-            //^P003ST2 - ^D011,1,500,2350
-            //^P003MAN - ^D014PK ELECTRONICS
-            report.Data = Encoding.ASCII.GetBytes("QPIGS");
-            device.WriteReport(report);
+            //String senddata = SECFormat.addPollHeader(CommandSEC.QPI);
+            String senddata = CommandSEC.QPI;
+            byte[] bytes = Encoding.ASCII.GetBytes(senddata);
 
+            device.Write(bytes);
+            device.Write(new byte[1]{13});//cr
+
+            device.Read(OnRead);
+            /*var report = device.CreateReport();
+            report.ReportId = 0;
+            report.Data = Encoding.ASCII.GetBytes(addPollHeader(CommandSEC.QPI) + "\r");
+            device.WriteReport(report);
+            */
 
             Console.ReadKey();
             device.CloseDevice();
+        }
+
+        private static void OnRead(HidDeviceData data)
+        {
+            if (data != null)
+            {
+                Console.WriteLine("@Status:{0} @Data:{1}", data.Status, Encoding.ASCII.GetString(data.Data));
+                if (data.Data.Last() != 13)
+                {
+                    device.Read(OnRead);
+                }
+            }
         }
 
         private static void OnReport(HidReport report)

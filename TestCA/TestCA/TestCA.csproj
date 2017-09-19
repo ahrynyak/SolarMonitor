@@ -47,10 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CRCUtil.cs" />
+    <Compile Include="VP\CommandSEC.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SECFormat.cs" />
+    <Compile Include="VP\SECFormat.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
