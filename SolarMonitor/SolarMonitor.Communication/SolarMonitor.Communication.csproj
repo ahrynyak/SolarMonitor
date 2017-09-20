@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messages\Attributes\FieldBaseAttribute.cs" />
     <Compile Include="Messages\Attributes\EnumFieldAttribute.cs" />
     <Compile Include="Messages\Attributes\NumericFieldAttribute.cs" />
     <Compile Include="Messages\MessageBase.cs" />

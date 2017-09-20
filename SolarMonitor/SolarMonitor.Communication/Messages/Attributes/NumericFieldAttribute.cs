@@ -2,12 +2,11 @@
 
 namespace SolarMonitor.Communication.Messages.Attributes
 {
-    public class NumericFieldAttribute : Attribute
+    public class NumericFieldAttribute : FieldBaseAttribute
     {
-        public int Position { get; set; }
         public int NumberOfDecimal { get; set; }
 
-        public NumericFieldAttribute(int position, int numberOfDecimal) //decimal
+        public NumericFieldAttribute(int position, int numberOfDecimal) : base(position) //decimal type
         {
             Position = position;
             NumberOfDecimal = numberOfDecimal;

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SolarMonitor.Communication.Messages.Attributes
 {
-    public class EnumFieldAttribute: NumericFieldAttribute
+    public class EnumFieldAttribute: FieldBaseAttribute
     {
-        public EnumFieldAttribute(int position) : base(position, 0)
+        public EnumFieldAttribute(int position) : base(position)
         {
         }
     }
