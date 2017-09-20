@@ -53,7 +53,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Messages\Queries\QpiriMessageTest.cs" />
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="Messages\Queries\QgsMessageTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

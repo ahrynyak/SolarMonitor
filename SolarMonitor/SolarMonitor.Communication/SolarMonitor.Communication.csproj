@@ -44,11 +44,15 @@
     <Compile Include="Messages\Attributes\EnumFieldAttribute.cs" />
     <Compile Include="Messages\Attributes\NumericFieldAttribute.cs" />
     <Compile Include="Messages\MessageBase.cs" />
+    <Compile Include="Messages\Queries\QgsMessage.cs" />
     <Compile Include="Messages\Queries\QpiriMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Messages\SetParameters\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Messages\P18ComUSBProcessor.java" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

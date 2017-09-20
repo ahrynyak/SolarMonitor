@@ -12,25 +12,25 @@ namespace SolarMonitor.Communication.Messages.Queries
         public override string Command => "PIRI";
 
         [NumericField(0, 1)]
-        public decimal? GridRatedVoltage { get; private set; }
+        public decimal GridRatedVoltage { get; set; }
 
         [NumericField(1, 1)]
-        public decimal? GridRatedCurrent { get; private set; }
+        public decimal GridRatedCurrent { get; set; }
 
         [NumericField(2, 1)]
-        public decimal? AcOutputRatedVoltage { get; private set; }
+        public decimal AcOutputRatedVoltage { get; set; }
 
         [NumericField(3, 1)]
-        public decimal? AcOutputRatedFrequency { get; private set; }
+        public decimal AcOutputRatedFrequency { get; set; }
 
         [NumericField(4, 1)]
-        public decimal? AcOutputRatedCurrent { get; private set; }
+        public decimal AcOutputRatedCurrent { get; set; }
 
         [NumericField(5)]
-        public decimal? AcOutputRatedApparentPower { get; private set; }
+        public decimal AcOutputRatedApparentPower { get; set; }
 
         [NumericField(6)]
-        public decimal? AcOutputRatedActivePower { get; private set; }
+        public decimal AcOutputRatedActivePower { get; set; }
 
     }
 }
