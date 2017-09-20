@@ -50,6 +50,7 @@
     <Compile Include="VP\CommandSEC.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VP\CRC16.cs" />
     <Compile Include="VP\SECFormat.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO.Ports;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ConsoleApplication2;
+using ConsoleApplication2.VP;
 using HidLibrary;
 using TestCA.VP;
 
@@ -19,51 +17,23 @@ namespace TestCA
         {
             device = HidDevices.Enumerate().ToArray()[0];
             device.OpenDevice();
-            device.Inserted += Device_Inserted; 
-            device.Removed += Device_Removed;   
+            device.Inserted += Device_Inserted;
+            device.Removed += Device_Removed;
             device.MonitorDeviceEvents = true;
-            device.ReadReport(OnReport);
-
-            //String senddata = SECFormat.addPollHeader(CommandSEC.QPI);
-            String senddata = CommandSEC.QPI;
-            byte[] bytes = Encoding.ASCII.GetBytes(senddata);
-
-            device.Write(bytes);
-            device.Write(new byte[1]{13});//cr
-
-            device.Read(OnRead);
-            /*var report = device.CreateReport();
-            report.ReportId = 0;
-            report.Data = Encoding.ASCII.GetBytes(addPollHeader(CommandSEC.QPI) + "\r");
-            device.WriteReport(report);
-            */
 
             Console.ReadKey();
-            device.CloseDevice();
         }
 
-        private static void OnRead(HidDeviceData data)
+        static List<byte> GetCommandBytes(string command)
         {
-            if (data != null)
-            {
-                Console.WriteLine("@Status:{0} @Data:{1}", data.Status, Encoding.ASCII.GetString(data.Data));
-                if (data.Data.Last() != 13)
-                {
-                    device.Read(OnRead);
-                }
-            }
-        }
-
-        private static void OnReport(HidReport report)
-        {
-            if (report != null)
-            {
-                Console.WriteLine("@ReportId:{0} @Exists:{1} @ReadStatus:{2} @Data:{3}",
-                    report.ReportId, report.Exists,
-                    report.ReadStatus, Encoding.ASCII.GetString(report.Data));
-            }
-
-            device.ReadReport(OnReport);
+            List<byte> result = new List<byte>();
+            var header = SECFormat.addPollHeader(command, 2);
+            var headerBytes = Encoding.ASCII.GetBytes(header);
+            var crc = CRC16.getCRCByte(header);
+            result.AddRange(headerBytes);
+            result.AddRange(crc);
+            result.Add(13);
+            return result;
         }
 
         private static void Device_Removed()
@@ -74,6 +44,40 @@ namespace TestCA
         private static void Device_Inserted()
         {
             Console.WriteLine("Device_Inserted");
+            var cmd = GetCommandBytes(CommandSEC.QPIRI);
+            foreach (var message in Split(cmd, 8))
+            {
+                var report = device.CreateReport();
+                report.ReportId = 0;
+                report.Data = message.ToArray();
+                device.WriteReport(report);
+            }
+            device.ReadReport(OnReport);
+        }
+
+        public static List<List<T>> Split<T>(List<T> source, int chunkSize)
+        {
+            return source.Select((x, i) => new {Index = i, Value = x}).
+                GroupBy(x => x.Index/chunkSize).
+                Select(x => x.Select(v => v.Value).ToList()).ToList();
+        }
+
+        private static void OnReport(HidReport report)
+        {
+            if (report != null)
+            {
+                Console.WriteLine("@ReportId:{0} @Exists:{1} @ReadStatus:{2} @Data:{3}",
+                    report.ReportId, report.Exists,
+                    report.ReadStatus, Encoding.ASCII.GetString(report.Data));
+                //string r = "";
+                //foreach (var item in report.Data)
+                //{
+                //    r += item;
+                //}
+                //File.AppendAllText(@"d:\2b.txt", r);
+            }
+
+            device.ReadReport(OnReport);
         }
     }
 }
