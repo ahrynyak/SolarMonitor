@@ -5,13 +5,17 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using SolarMonitor.Communication.Messages.Attributes;
+using SolarMonitor.Communication.Messages.Common;
 
 namespace SolarMonitor.Communication.Messages
 {
     public abstract class MessageBase
     {
-        protected MessageBase()
+        private readonly IFieldParser fieldParser;
+
+        protected MessageBase(IFieldParser fieldParser)
         {
+            this.fieldParser = fieldParser;
             InitFields();
         }
 
@@ -19,12 +23,13 @@ namespace SolarMonitor.Communication.Messages
 
         private Dictionary<PropertyInfo, FieldBaseAttribute> Fields { get; set; }
 
-
         public void SetResponse(List<string> response)
         {
-            if (response.Count < Fields.Max(x => x.Value.Position - 1))
+            var expectedFieldCount = Fields.Max(x => x.Value.Position + 1);
+            if (response.Count != expectedFieldCount)
             {
-                //todo: validation response is too short
+                throw new ArgumentOutOfRangeException(nameof(response),
+                    string.Format("Expected count {0}, actual count {1}", expectedFieldCount, response.Count));
             }
             foreach (var field in Fields)
             {
@@ -33,60 +38,31 @@ namespace SolarMonitor.Communication.Messages
                 {
                     object propertyValue = null;
 
-                    var numericFieldAttribute = field.Value as NumericFieldAttribute;
-                    if (numericFieldAttribute != null)
+                    var stringFieldAttribute = field.Value as StringFieldAttribute;
+                    if (stringFieldAttribute != null)
                     {
-                        propertyValue = ParseNumericField(responseValue, numericFieldAttribute);
+                        propertyValue = fieldParser.ParseStringField(responseValue, stringFieldAttribute);
+                    }
+                    var intFieldAttribute = field.Value as IntFieldAttribute;
+                    if (propertyValue == null && intFieldAttribute != null)
+                    {
+                        propertyValue = fieldParser.ParseIntField(responseValue, intFieldAttribute);
+                    }
+                    var numericFieldAttribute = field.Value as DecimalFieldAttribute;
+                    if (propertyValue == null && numericFieldAttribute != null)
+                    {
+                        propertyValue = fieldParser.ParseDecimalField(responseValue, numericFieldAttribute);
                     }
 
                     var enumFieldAttribute = field.Value as EnumFieldAttribute;
                     if (propertyValue == null && enumFieldAttribute != null)
                     {
-                        propertyValue = ParseEnumField(responseValue, field.Key.PropertyType);
+                        propertyValue = fieldParser.ParseEnumField(responseValue, field.Key.PropertyType);
                     }
 
                     field.Key.SetValue(this, propertyValue);
                 }
             }
-        }
-
-        private decimal? ParseNumericField(string response, NumericFieldAttribute numericFieldAttribute)
-        {
-            decimal val;
-            if (decimal.TryParse(response, out val))
-            {
-                if (numericFieldAttribute.NumberOfDecimal > 0)
-                {
-                    val = val/(numericFieldAttribute.NumberOfDecimal*10);
-                }
-                return val;
-            }
-            else
-            {
-                //todo: cannot parse value
-            }
-            return null;
-        }
-
-        private object ParseEnumField(string response, Type enumType)
-        {
-            int val;
-            if (int.TryParse(response, out val))
-            {
-                if (((int[]) Enum.GetValues(enumType)).Contains(val))
-                {
-                    return Enum.Parse(enumType, response);
-                }
-                else
-                {
-                    //enum value is not supported
-                }
-            }
-            else
-            {
-                //todo: cannot parse value
-            }
-            return null;
         }
 
         private void InitFields()

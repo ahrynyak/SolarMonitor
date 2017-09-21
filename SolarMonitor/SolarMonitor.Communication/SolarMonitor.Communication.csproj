@@ -42,7 +42,11 @@
   <ItemGroup>
     <Compile Include="Messages\Attributes\FieldBaseAttribute.cs" />
     <Compile Include="Messages\Attributes\EnumFieldAttribute.cs" />
-    <Compile Include="Messages\Attributes\NumericFieldAttribute.cs" />
+    <Compile Include="Messages\Attributes\DecimalFieldAttribute.cs" />
+    <Compile Include="Messages\Attributes\IntFieldAttribute.cs" />
+    <Compile Include="Messages\Attributes\StringFieldAttribute.cs" />
+    <Compile Include="Messages\Common\FieldParser.cs" />
+    <Compile Include="Messages\Common\IFieldParser.cs" />
     <Compile Include="Messages\MessageBase.cs" />
     <Compile Include="Messages\Queries\QgsMessage.cs" />
     <Compile Include="Messages\Queries\QpiriMessage.cs" />

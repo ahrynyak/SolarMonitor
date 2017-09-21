@@ -3,61 +3,103 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SolarMonitor.Communication.Messages.Attributes;
+using SolarMonitor.Communication.Messages.Common;
 
 namespace SolarMonitor.Communication.Messages.Queries
 {
     public class QgsMessage : MessageBase
     {
+        public QgsMessage() : base(new FieldParser())
+        {
+        }
+
         public override string Command => "GS";
 
-        [NumericField(0, 1)]
+        [DecimalField(0, true)]
         public decimal GridVoltage { get; set; }
-        [NumericField(1, 1)]
+
+        [DecimalField(1, true)]
         public decimal GridFrequency { get; set; }
-        [NumericField(2, 1)]
+
+        [DecimalField(2, true)]
         public decimal AcOutputVoltage { get; set; }
-        [NumericField(3, 1)]
+
+        [DecimalField(3, true)]
         public decimal AcOutputFrequency { get; set; }
-        [NumericField(4)]
+
+        [IntField(4)]
         public int AcOutputApperentPower { get; set; }
-        [NumericField(5)]
+
+        [IntField(5)]
         public int AcOutputActivePower { get; set; }
-        [NumericField(6)]
+
+        [IntField(6)]
         public int OutputLoadPercent { get; set; }
-        [NumericField(7, 1)]
+
+        [DecimalField(7, true)]
         public decimal BatteryVoltage { get; set; }
-        [NumericField(8, 1)]
-        public decimal BatteryVoltageFromSCC1 { get; set; }
-        [NumericField(9, 1)]
-        public decimal BatteryVoltageFromSCC2 { get; set; }
-        [NumericField(10, 0)]
+
+        [DecimalField(8, true)]
+        public decimal BatteryVoltageFromScc1 { get; set; }
+
+        [DecimalField(9, true)]
+        public decimal BatteryVoltageFromScc2 { get; set; }
+
+        [DecimalField(10)]
         public decimal DisChargingCurrent { get; set; }
-        [NumericField(11, 0)]
+
+        [DecimalField(11)]
         public decimal ChargingCurrent { get; set; }
-        [NumericField(12)]
+
+        [IntField(12)]
         public int BatteryCapacity { get; set; }
-        [NumericField(13)]
+
+        [IntField(13)]
         public int HeatSinkTemperature { get; set; }
-        [NumericField(14)]
+
+        [IntField(14)]
         public int MpptChargerTemperature1 { get; set; }
-        [NumericField(15)]
+
+        [IntField(15)]
         public int MpptChargerTemperature2 { get; set; }
-        [NumericField(16)]
+
+        [IntField(16)]
         public int PvInputPower1 { get; set; }
-        [NumericField(17)]
+
+        [IntField(17)]
         public int PvInputPower2 { get; set; }
-        [NumericField(18, 1)]
+
+        [DecimalField(18, true)]
         public decimal PvInputVoltage1 { get; set; }
-        [NumericField(19, 1)]
+
+        [DecimalField(19, true)]
         public decimal PvInputVoltage2 { get; set; }
-        /*
-        string settingValueState = gs[20];
-        string pv1WorkStatus = gs[21];
-        string pv2WorkStatus = gs[22];
-        string loadConnection = gs[23];
-        string batteryStatus = gs[24];
-        string invDirection = gs[25];
-        string lineDirection = gs[26];
-        string localParallelID = gs[27];*/
+
+        [StringField(20)]
+        public string SettingValueState { get; set; }
+
+        [StringField(21)]
+        public string Pv1WorkStatus { get; set; }
+
+        [StringField(22)]
+        public string Pv2WorkStatus { get; set; }
+
+        [StringField(23)]
+        public string LoadConnection { get; set; }
+
+        [StringField(24)]
+        public string BatteryStatus { get; set; }
+
+        [StringField(25)]
+        public string InvDirection { get; set; }
+
+        [StringField(26)]
+        public string LineDirection { get; set; }
+
+        [StringField(27)]
+        public string LocalParallelId { get; set; }
+
+        
     }
 }
