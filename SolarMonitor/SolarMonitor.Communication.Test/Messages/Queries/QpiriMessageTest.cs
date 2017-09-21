@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SolarMonitor.Communication.Messages.Queries;
 
+
 namespace SolarMonitor.Communication.Test.Messages.Queries
 {
     [TestClass]
